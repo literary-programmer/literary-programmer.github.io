@@ -1,0 +1,121 @@
+<style>
+* {
+font-size: 14pt;
+};
+</style>
+<input title="task" id="i1" value="abcdefghijklmnopqrstuvwxyz">
+<textarea id="tbox" title="sheet" aria-multiline="true" spellcheck="false"></textarea>
+<div><ul style="list-style-type:none" id="talert" aria-relevant="additions" aria-live="assertive" aria-atomic="false" role="log"></ul></div>
+
+<script>
+function id(e){return document.getElementById(e);};
+function inform(s){var l=id("talert"),li;if(l.childrenElementCount&&l.lastElementChild.innerText==s){alert(1);l.removeChild(l.lastElementChild);return;};li=document.createElement("LI");li[arguments[1]==true?"innerHTML":"innerText"]=s;l.appendChild(li);};
+function objectExplain(o){var m="";for (x in o){m+="<div style=\"margin:0;padding:0;\"><span style=\"display:inline;\" title=\""+typeof x+"\">"+x+"</span><span style=\"display:inline;\"> = </span><span style=\"display:inblock;padding:0;margin:0;\" title=\""+typeof o[x]+"\">"+o[x]+";</span></div>";};inform(m,true);};
+function ord(v){return String.fromCharCode(v);};
+document.title="Typing Test!";
+
+var
+GTyping=false,
+GSeconds=0,
+GChars=0,
+GWpm=0,
+GWcm=0,
+GTbox=id("tbox"),
+GTicks,GTimer,GLetters,GIndex;
+
+function typing_monitor(e)
+{
+var
+a=e.altKey,
+c=e.code,
+cc=e.charCode,
+ck=e.ctrlKey,
+ct=e.currentTarget,
+ic=e.isComposing,
+k=e.key,
+kc=e.keyCode,
+l=(function(e){var l=[];for(x in e){if(x.substr(0, 17)=="DOM_KEY_LOCATION_")l[e[x]]=x.substr(17);};return l[e.location];}(e)),
+mk=e.metaKey,
+r=e.repeat,
+s=e.shiftKey,
+t=e.target,
+ts=e.timeStamp,
+ty=e.type,
+w=e.which,
+
+/*
+keys=(function(cc){
+var k="1234567890qwertyuiopasdfghjkl;zxcvbnm,./".toLowercase(),K;
+for(x in k){
+K[k[x].charCodeAt()]=
+};
+}(cc));
+*/
+
+keys = [
+["z", "a", "q", "1"],
+["x", "s", "w", "2"],
+["c", "d", "e", "3"],
+["v", "f", "r", "4"],
+["b", "g", "t", "5"],
+["n", "h", "y", "6"],
+["m", "j", "u", "7"],
+[",", "k", "i", "8"],
+[".", "l", "o", "9"],
+["/", ";", "p", "0"]
+];
+
+if(k=="Shift"||k=="Control"||k=="Alt")return;
+//objectExplain(e);return;
+//inform("\""+(a?"Alt plus ":"")+(ck?"Control plus ":"")+(s?"Shift plus ":"")+k+"\" key pressed");return;
+
+try{
+if(a||ck)return;
+if(cc>0||(w>=65&&w<=90)){
+if(GIndex==undefined)GIndex=ct.value.length;
+var i1=id("i1"),
+nc=i1.value[GIndex];
+if(nc.charCodeAt()!=(cc||((ty=="keydown"&&!s&&(w>=65&&w<=90))?w+32:w))){
+e.preventDefault();
+inform("Type '"+nc+".'");
+return;
+};
+if (GLetters==undefined)GLetters=[];
+//ct.value+=String.fromCharCode(w);
+if(t.value.length<1){
+if(GLetters.length>0)GLetters=[];
+if (GTimer==undefined)GTimer=setInterval(function(){GTicks++;},10);
+inform("Started");
+}else if((t.value.length+(ty!="keyup"?1:0))>=i1.value.length){
+clearInterval(GTimer);
+// GLetters[t.value.length]=GTicks/100;
+GLetters.push(ts);
+t.value="";
+//objectExplain(GLetters);
+inform("Completed in "+((ts-GLetters[0])/1000).toFixed(2)+" seconds");
+GLetters=[];
+GTicks=0;
+if(ty!="keyup"){
+GIndex=e.currentTarget.value.length;
+e.preventDefault();
+};
+return;
+};
+if (GLetters==undefined)GLetters=[];
+if(t.value.length>=1&&t.value.length<i1.value.length)
+//GLetters[t.value.length]=GTicks/100;
+GLetters.push(ts);
+}else{inform("Only type!");};
+}catch(E){inform(E.name+": "+E.message+".");};
+};
+
+GTbox.addEventListener("keypress", typing_monitor, true);
+GTbox.addEventListener("input",function(e){GIndex=e.currentTarget.value.length;},true);
+
+/*
+for (x in document.body){
+if (x.substr(0, 2)=="on")
+inform(x.substr(2).link("https://www.google.com/search?q="+x+".html"),true);
+};
+*/
+</script>
