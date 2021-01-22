@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Weather</title>
+<script>
+class owm {
+constructor(sAppID="15716ac6f3e5d3168592c6042e061f62") {
+this.api=sAppID;
+}
+
+current(sLocation) {
+var
+sURL="http://api.openweathermap.org/data/2.5/weather?q="+sLocation+"&appid="+this.api+"&unit=Celsius",
+xhr=new XMLHttpRequest();
+xhr.onreadystatechange=function() {
+if (xhr.readyState==4&&xhr.status==200)
+this.processCurrent(xhr.response);
+}.bind(this);
+xhr.open("GET",sURL);
+xhr.send();
+}
+
+processCurrent(sText) {
+/*
+•  coord 
+list of 2 items nesting level 1
+◦ coord.lon  City geo location, longitude 
+◦ coord.lat  City geo location, latitude 
+list end nesting level 1
+•  weather  (more info Weather condition codes) 
+list of 4 items nesting level 1
+◦ weather.id  Weather condition id 
+◦ weather.main  Group of weather parameters (Rain, Snow, Extreme etc.) 
+◦ weather.description  Weather condition within the group. You can get the output in your language. 
+Learn more
+◦ weather.icon  Weather icon id 
+list end nesting level 1
+•  base  Internal parameter 
+•  main 
+list of 8 items nesting level 1
+◦ main.temp  Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit. 
+◦ main.feels_like  Temperature. This temperature parameter accounts for the human perception of weather. Unit Default: Kelvin, Metric: Celsius, Imperial:
+Fahrenheit. 
+◦ main.pressure  Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data), hPa 
+◦ main.humidity  Humidity, % 
+◦ main.temp_min  Minimum temperature at the moment. This is minimal currently observed temperature (within large megalopolises and urban areas). Unit Default:
+Kelvin, Metric: Celsius, Imperial: Fahrenheit. 
+◦ main.temp_max  Maximum temperature at the moment. This is maximal currently observed temperature (within large megalopolises and urban areas). Unit Default:
+Kelvin, Metric: Celsius, Imperial: Fahrenheit. 
+◦ main.sea_level  Atmospheric pressure on the sea level, hPa 
+◦ main.grnd_level  Atmospheric pressure on the ground level, hPa 
+list end nesting level 1
+•  wind 
+list of 3 items nesting level 1
+◦ wind.speed  Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour. 
+◦ wind.deg  Wind direction, degrees (meteorological) 
+◦ wind.gust  Wind gust. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour 
+list end nesting level 1
+•  clouds 
+list of 1 items nesting level 1
+◦ clouds.all  Cloudiness, % 
+list end nesting level 1
+•  rain 
+list of 2 items nesting level 1
+◦ rain.1h  Rain volume for the last 1 hour, mm 
+◦ rain.3h  Rain volume for the last 3 hours, mm 
+list end nesting level 1
+•  snow 
+list of 2 items nesting level 1
+◦ snow.1h  Snow volume for the last 1 hour, mm 
+◦ snow.3h  Snow volume for the last 3 hours, mm 
+list end nesting level 1
+•  dt  Time of data calculation, unix, UTC 
+•  sys 
+list of 6 items nesting level 1
+◦ sys.type  Internal parameter 
+◦ sys.id  Internal parameter 
+◦ sys.message  Internal parameter 
+◦ sys.country  Country code (GB, JP etc.) 
+◦ sys.sunrise  Sunrise time, unix, UTC 
+◦ sys.sunset  Sunset time, unix, UTC 
+list end nesting level 1
+•  timezone  Shift in seconds from UTC 
+•  id  City ID 
+•  name  City name 
+•  cod  Internal parameter 
+*/
+document.body.innerText=sText;
+var
+a=document.createElement("article"),c,
+wo=JSON.parse(sText);
+c=document.createElement("div");
+c.innerText=wo.name+" ("+wo.id+")";
+a.appendChild(c);
+c=document.createElement("img");
+c.src="http://openweathermap.org/img/wn/"+wo.weather[0].icon+".png";
+c.alt=wo.weather[0].description;
+a.appendChild(c);
+c=document.createElement("p");
+var t=[],o;
+o = {
+Temprature: (wo.main.feels_like-273.15).toFixed()+"°",
+Clouds: wo.clouds.all+"%",
+WindSpead: wo.wind.speed+" KM per hour",
+WindDirection: wo.wind.deg + "degree",
+Londitude: wo.coord.lon,
+Latitude: wo.coord.lat,
+Humidity: wo.main.humidity+"%",
+SunRize: new Date(wo.sys.sunrise*1000).toLocaleTimeString(),
+SunSet: new Date(wo.sys.sunset*1000).toLocaleTimeString()
+};
+for (var x in o) {
+t.push(x+": "+o[x]);
+};
+c.innerText=t.join("\r\n");
+a.appendChild(c);
+document.body.appendChild(a);
+};
+};
+var sLocation;
+/*
+if (window.isSecureContext) {
+
+}
+else
+*/
+
+sLocation="Lahore";
+(new owm).current(sLocation);
+</script>
+</head>
+<body>
+</body
+</html>
